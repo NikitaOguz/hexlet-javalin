@@ -4,26 +4,24 @@
 <!doctype html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <title>Hexlet Javalin App</title>
+    <meta charset="utf-8" />
+    <title>Hexlet Javalin Example</title>
 </head>
 <body>
 <header>
-    <h1>Hexlet Javalin App</h1>
+    <h1>Мой сайт курсов</h1>
     <nav>
         <a href="/">Главная</a>
-        <a href="/courses">Курсы</a>
+        <a href="/courses">Courses</a>
     </nav>
     <hr>
 </header>
 
-<main>
-    ${content}
-</main>
+${content}
 
 <footer>
     <hr>
-    <a href="https://github.com/NikitaOguz">My GitHub</a>
+    <a href="https://github.com/NikitaOguz">GitHub</a>
 </footer>
 </body>
 </html>

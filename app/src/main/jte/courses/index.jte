@@ -3,14 +3,14 @@
 
 @template.layout.page(
 content = @`
-    <h1>${page.getHeader()}</h1>
+    <h2>${page.getHeader()}</h2>
 
     @if(page.getCourses().isEmpty())
-        <p>Пока не добавлено ни одного курса</p>
+        <p>Пока нет курсов</p>
     @else
         @for(var course : page.getCourses())
             <div>
-                <h2>${course.getName()}</h2>
+                <h3>${course.getName()}</h3>
                 <p>${course.getDescription()}</p>
             </div>
         @endfor
