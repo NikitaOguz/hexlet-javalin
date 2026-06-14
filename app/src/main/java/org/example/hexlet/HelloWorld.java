@@ -5,7 +5,7 @@ import io.javalin.rendering.template.JavalinJte;
 import static io.javalin.rendering.template.TemplateUtil.model;
 import org.example.hexlet.model.Course;
 import org.example.hexlet.dto.courses.CoursesPage;
-
+import org.apache.commons.text.StringEscapeUtils;
 import java.util.List;
 
 public class HelloWorld {
@@ -24,7 +24,14 @@ public class HelloWorld {
             var page = new CoursesPage(courses, header);
             ctx.render("courses/index.jte", model("page", page));
         });
+        app.get("/users", ctx -> {
+            var id = ctx.queryParam("id");
 
+            ctx.render(
+                    "users/show.jte",
+                    model("id", id)
+            );
+        });
         app.start(7070);
     }
 }
