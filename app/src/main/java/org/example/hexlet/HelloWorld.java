@@ -1,7 +1,10 @@
 package org.example.hexlet;
 
+import io.javalin.validation.ValidationException;
+import org.example.hexlet.dto.courses.BuildCoursePage;
 import org.example.hexlet.dto.courses.CoursesPage;
 import io.javalin.Javalin;
+import org.example.hexlet.dto.users.BuildUserPage;
 import org.example.hexlet.model.Course;
 import org.example.hexlet.model.User;
 import org.example.hexlet.repository.CourseRepository;
@@ -22,35 +25,50 @@ public class HelloWorld {
         });
 
         app.get("/courses", ctx -> {
-            var term = ctx.queryParam("term");
-            var allCourses = new ArrayList<Course>();
-            allCourses.add(new Course("Java", "ООП"));
-            allCourses.add(new Course("JavaScript", "Frontend"));
-            allCourses.add(new Course("SQL", "Базы данных"));
+            try {
+                var name = ctx.formParamAsClass("name", String.class)
+                        .check(value -> value.length() > 2,
+                                "Название курса должно быть длиннее 2 символов")
+                        .get();
 
-            List<Course> courses;
+                var description = ctx.formParamAsClass("description", String.class)
+                        .check(value -> value.length() > 10,
+                                "Описание курса должно быть длиннее 10 символов")
+                        .get();
 
-            if (term != null) {
-                courses = CourseRepository.search(term);
-            } else {
-                courses = CourseRepository.getEntities();
+                var course = new Course(name, description);
+                CourseRepository.save(course);
+
+                ctx.redirect("/courses");
+
+            } catch (ValidationException e) {
+                var page = new BuildCoursePage(
+                        ctx.formParam("name"),
+                        ctx.formParam("description"),
+                        e.getErrors()
+                );
+                ctx.render("courses/build.jte", model("page", page));
             }
-        var header = "Курсы";
-        var page = new CoursesPage(courses, term, header);
-        ctx.render("courses/index.jte", model("page", page));
-    });
+        });
         app.get("/users/build", ctx -> {
-            ctx.render("users/build.jte");
+            var page = new BuildUserPage();
+            ctx.render("users/build.jte", model("page", page));
         });
         app.post("/users", ctx -> {
             var name = ctx.formParam("name").trim();
             var email = ctx.formParam("email").trim().toLowerCase();
-            var password = ctx.formParam("password");
-            var passwordConfirmation = ctx.formParam("passwordConfirmation");
-
-            var user = new User(name, email, password);
-            UserRepository.save(user);
-            ctx.result(UserRepository.getEntities().toString());
+            try {
+                var passwordConfirmation = ctx.formParam("passwordConfirmation");
+                var password = ctx.formParamAsClass("password", String.class)
+                        .check(value -> value.equals(passwordConfirmation), "Пароли не совпадают")
+                        .get();
+                var user = new User(name, email, password);
+                UserRepository.save(user);
+                ctx.redirect("/users");
+            } catch (ValidationException e) {
+                var page = new BuildUserPage(name, email, e.getErrors());
+                ctx.render("users/build.jte", model("page", page));
+            }
         });
         app.start(7070);
 }
