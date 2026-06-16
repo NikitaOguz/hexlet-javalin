@@ -3,8 +3,10 @@ package org.example.hexlet;
 import org.example.hexlet.dto.courses.CoursesPage;
 import io.javalin.Javalin;
 import org.example.hexlet.model.Course;
+import org.example.hexlet.repository.CourseRepository;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static io.javalin.rendering.template.TemplateUtil.model;
 
@@ -22,18 +24,12 @@ public class HelloWorld {
             allCourses.add(new Course("JavaScript", "Frontend"));
             allCourses.add(new Course("SQL", "Базы данных"));
 
-            ArrayList<Course> courses;
+            List<Course> courses;
 
             if (term != null) {
-                courses = new ArrayList<>(
-                        allCourses.stream()
-                                .filter(course ->
-                                        course.getName().contains(term)
-                                                || course.getDescription().contains(term))
-                                .toList()
-                );
+                courses = CourseRepository.search(term);
             } else {
-                courses = allCourses;
+                courses = CourseRepository.getEntities();
             }
         var header = "Курсы";
         var page = new CoursesPage(courses, term, header);

@@ -32,6 +32,7 @@ dependencies {
     compileOnly("org.projectlombok:lombok:1.18.38")
     annotationProcessor("org.projectlombok:lombok:1.18.38")
     implementation("org.apache.commons:commons-text:1.11.0")
+    implementation("com.zaxxer:HikariCP:6.3.0")
 }
 
 tasks.test {
