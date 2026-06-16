@@ -50,7 +50,7 @@ public class HelloWorld {
 
             var user = new User(name, email, password);
             UserRepository.save(user);
-            ctx.redirect("/users");
+            ctx.result(UserRepository.getEntities().toString());
         });
         app.start(7070);
 }
